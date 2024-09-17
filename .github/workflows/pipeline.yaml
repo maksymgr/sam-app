@@ -127,12 +127,11 @@ jobs:
 
       - name: Upload artifacts to testing artifact buckets
         run: |
-          sam --version
           sam package \
             --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
             --region ${TESTING_REGION} \
-            --output-template-file packaged-testing.yaml \
-            --debug
+            --output-template-file packaged-testing-tmp.yaml
+          sed '1s/^sam //' packaged-testing-tmp.yaml > packaged-testing.yaml
 
       - uses: actions/upload-artifact@v3
         with:
@@ -153,7 +152,8 @@ jobs:
           sam package \
             --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
             --region ${PROD_REGION} \
-            --output-template-file packaged-prod.yaml
+            --output-template-file packaged-prod-tmp.yaml
+          sed '1s/^sam //' packaged-prod-tmp.yaml > packaged-prod.yaml
 
       - uses: actions/upload-artifact@v3
         with:
